@@ -79,7 +79,7 @@ class Listener:
                 self.update_track(cur_track)
 
             # store the largest thumbnail image
-            if cur_track['thumbnails']:
+            if 'thumbnails' in cur_track and cur_track['thumbnails']:
                 largest_res = 0
 
                 for thumbnail in cur_track['thumbnails']:
@@ -90,8 +90,11 @@ class Listener:
                         cur_track['thumbnail'] = thumbnail
 
             # remove feedback tokens and whatnot as they.. change
-            del cur_track['feedbackToken']
-            del cur_track['feedbackTokens']
+            if 'feedbackToken' in cur_track:
+                del cur_track['feedbackToken']
+
+            if 'feedbackTokens' in cur_track:
+                del cur_track['feedbackTokens']
 
             # store the last track for future reference
             self.last_track = cur_track
