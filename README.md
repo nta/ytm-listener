@@ -46,3 +46,21 @@ to use gunicorn, you can do the following:
 you can `GET /state` or `GET /state/now`, the latter will do an instant refresh
 
 there's no way to tell if playback stopped, so there's a bit of a heuristic
+
+### homeassistant sensor
+for validation/logging, i've got this storing state to a homeassistant sensor- here's the config
+```yaml
+sensor:
+  - platform: rest
+    resource: http://driftveil:8073/state
+    name: ytm_nta
+    value_template: "{{ value_json.artistNames }} - {{ value_json.title }}"
+    availability: "{{ value_json is not none }}"
+    json_attributes:
+      - albumName
+      - artistNames
+      - videoId
+      - duration
+      - likeStatus
+      - thumbnailUrl
+```
