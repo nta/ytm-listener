@@ -18,10 +18,12 @@ USE_SENTRY = os.getenv("USE_SENTRY", "0") == "1"
 
 if USE_SENTRY:
     SENTRY_DSN = os.getenv("SENTRY_DSN", "")
+    SENTRY_ENVIRONMENT = os.getenv("SENTRY_ENVIRONMENT", "dev")
 
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         traces_sample_rate=1.0,
+        environment=SENTRY_ENVIRONMENT,
     )
 
 app = Flask(__name__)
