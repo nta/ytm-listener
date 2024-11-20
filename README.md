@@ -22,6 +22,26 @@ $ pip install -r requirements.txt
    ```
 3. run it using either the flask dev server (`flask run`), or some wsgi thing
 
+### wsgi thing
+to use gunicorn, you can do the following:
+1. `pip install -e .[gunicorn]`
+2. make a systemd user service (`~/.config/systemd/user/ytm-listener.service`):
+    ```ini
+    [Install]
+    WantedBy=default.target
+
+    [Service]
+    WorkingDirectory=/home/nta/dev/ytm-listener/
+    Environment=PATH=/home/nta/dev/ytm-listener/venv/bin/:$PATH
+    ExecStart=/home/nta/dev/ytm-listener/venv/bin/gunicorn --workers 1 --bind 127.0.0.1:8173 app:app
+    ExecReload=/bin/kill -s HUP $MAINPID
+    KillMode=mixed
+    TimeoutStopSec=5
+    Restart=on-failure
+    RestartSec=10s
+    ```
+3. enable and/or start it: `systemctl --user enable ytm-listener && systemctl --user start ytm-listener`
+
 ## usage
 you can `GET /state` or `GET /state/now`, the latter will do an instant refresh
 
