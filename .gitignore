@@ -1,0 +1,7 @@
+__pycache__/
+venv/
+
+.env
+
+# ytmusicapi auth file
+browser.json
