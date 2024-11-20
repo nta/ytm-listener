@@ -96,6 +96,21 @@ class Listener:
             if 'feedbackTokens' in cur_track:
                 del cur_track['feedbackTokens']
 
+            # simplified attributes for extraction
+            if 'thumbnail' in cur_track:
+                cur_track['thumbnailUrl'] = cur_track['thumbnail']['url']
+
+            if 'artists' in cur_track:
+                artists = []
+
+                for artist in cur_track['artists']:
+                    artists.append(artist['name'])
+
+                cur_track['artistNames'] = ' & '.join(artists)
+
+            if 'album' in cur_track:
+                cur_track['albumName'] = cur_track['album']['name']
+
             # store the last track for future reference
             self.last_track = cur_track
         finally:
