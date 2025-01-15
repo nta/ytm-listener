@@ -14,7 +14,8 @@ $ pip install -r requirements.txt
 ## running
 
 1. set up a `browser.json` with account cookies as defined in the [ytmusicapi docs](https://ytmusicapi.readthedocs.io/en/stable/setup/browser.html)
-   oauth login doesn't work anymore, a private firefox session is most reliable as the user agent remains static (close the session after you copy the cookies)
+   ~~oauth login doesn't work anymore~~ oauth login might work again but haven't checked \
+   a private firefox session is most reliable as the user agent remains static (close the session after you copy the cookies)
 2. optionally set up a `.env` with a Sentry DSN, this is useful so you can tell if authentication fails
    ```ini
    USE_SENTRY=1
