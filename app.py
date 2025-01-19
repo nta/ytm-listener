@@ -104,7 +104,10 @@ class Listener:
                 artists = []
 
                 for artist in cur_track['artists']:
-                    artists.append(artist['name'])
+                    # OMVs and UGCs tend to have artists along the lines of [{id: "UC2cUfTntum9HJa0kkG0butQ", name: "SAWTOWNE"}, {id: None, name: "583K views"}]
+                    # 'SAWTOWNE & 583K views' is a *horrible* artist name
+                    if artist['id']:
+                        artists.append(artist['name'])
 
                 cur_track['artistNames'] = ' & '.join(artists)
 
