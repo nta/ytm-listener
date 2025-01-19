@@ -108,7 +108,7 @@ class Listener:
 
                 cur_track['artistNames'] = ' & '.join(artists)
 
-            if 'album' in cur_track:
+            if 'album' in cur_track and cur_track['album']:
                 cur_track['albumName'] = cur_track['album']['name']
 
             # store the last track for future reference
