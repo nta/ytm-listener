@@ -11,6 +11,8 @@ import threading
 import signal
 import traceback
 
+from scrobbler import Scrobbler
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -26,9 +28,15 @@ if USE_SENTRY:
         environment=SENTRY_ENVIRONMENT,
     )
 
+USE_LASTFM = os.getenv("USE_LASTFM", "0") == "1"
+
 app = Flask(__name__)
 ytmusic = YTMusic("browser.json")
 
+scrobbler = None
+
+if USE_LASTFM:
+    scrobbler = Scrobbler()
 
 class Listener:
     def __init__(self, ytmusic):
@@ -74,10 +82,6 @@ class Listener:
             history = self.get_history()
             cur_track = history[0]
 
-            # if the video id doesn't match the last track, it's probably a new track
-            if self.last_track and cur_track["videoId"] != self.last_track["videoId"]:
-                self.update_track(cur_track)
-
             # store the largest thumbnail image
             if 'thumbnails' in cur_track and cur_track['thumbnails']:
                 largest_res = 0
@@ -114,8 +118,15 @@ class Listener:
 
                 cur_track['artistNames'] = ' & '.join(artists)
 
+            cur_track['albumName'] = None
+
             if 'album' in cur_track and cur_track['album']:
                 cur_track['albumName'] = cur_track['album']['name']
+
+            # if the video id doesn't match the last track, it's probably a new track
+            # do this *after* adding metadata so we get all the data™ 
+            if self.last_track and cur_track["videoId"] != self.last_track["videoId"]:
+                self.update_track(cur_track)
 
             # store the last track for future reference
             self.last_track = cur_track
@@ -124,6 +135,9 @@ class Listener:
 
     def update_track(self, track):
         print("new track:", track['title'])
+
+        if scrobbler:
+            scrobbler.update_track(track)
 
         # add some leeway for pausing the track/repeats/.., since we can't reasonably detect stopping
         self.track_end = time.time() + (track['duration_seconds'] * 1.5)
